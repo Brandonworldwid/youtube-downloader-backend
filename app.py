@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from pytube import YouTube
 from flask_cors import CORS
+import os  # ✅ Added for dynamic port binding on Render
 
 app = Flask(__name__)
 CORS(app)
@@ -43,6 +44,10 @@ def download_video():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+@app.route("/")  # Optional test route
+def home():
+    return "YouTube Downloader backend is live!"
 
+if __name__ == "__main__":
+    # ✅ This is important for Render to detect and open the port
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
